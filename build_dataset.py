@@ -1,9 +1,3 @@
-"""
-Given a input video (.mp4), outputs the probabilities of the k most
-plausible words.
-Also outputs a .avi file that shows the input of the neural network and
-a summary bar graph
-"""
 
 import os
 import cv2
@@ -39,13 +33,11 @@ def videoToArray(path) :
         height,
         width,
         n_frames))
-    # Create the numpy array that will host all the frames
-    # Could use np.append later in the loop but this is
-    # more efficient
+    
     video = np.zeros((height, width, n_frames))
     video = video.astype(np.uint8)
 
-    # Iterate over every frame of the video
+  
     i = 0
     while True :
         # Capture one frame
@@ -60,13 +52,7 @@ def videoToArray(path) :
     return video, n_frames, fps
 
 def frameAdjust(video):
-    """
-    Select a fixed number of frames from the input video
-    Args :
-        - 3D numpy array
-    Returns :
-        - Adjusted numpy array
-    """
+  
     target = 29
     n_frames = video.shape[2]
     if target == n_frames :
@@ -82,8 +68,7 @@ def frameAdjust(video):
             print("Indexes of the selected frames : \n{}".format(idx))
             return video[:, :, idx]
         else :
-            # If number of frames is less than 29, duplicate last
-            # frame at the end of the video
+           
             output_video = np.zeros((video.shape[0], video.shape[1], 29)).astype(np.uint8)
             output_video[:, :, :n_frames] = video
             for i in range(target-n_frames+1) :
@@ -123,27 +108,14 @@ def mouthCrop(video):
     return cropped_video
 
 def reshapeAndConvert(video) :
-    """
-    Reshape the video to a 4D array before feeding it to the model function
-    Also apply normalization to go from [0-255] to [0-1]
-    Args :
-        - 3D numpy array
-    Returns :
-        - 4D numpy array
-    """
+   
     size = video.shape[0]
     n_frames = video.shape[2]
     video = np.reshape(video, (1, size, size, n_frames)).astype(np.float32)
     return video / 255.0
 
 def create_dict_word_list(path) :
-    '''
-    Create a dict used to transfrom labels from int to str
-    Args :
-        - path : Path to the word list
-    Return :
-        - Python dictionnary {Word : Label}
-    '''
+  
     print("path", path)
     count = 0
     my_dict = dict()
